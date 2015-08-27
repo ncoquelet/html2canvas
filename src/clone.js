@@ -45,8 +45,10 @@ function cloneNode(node, javascriptEnabled) {
 
 function initNode(node) {
     if (node.nodeType === 1) {
-        node.scrollTop = node._scrollTop;
+        node.scrollTop = node._scrollTop;        
+        delete node._scrollTop;
         node.scrollLeft = node._scrollLeft;
+        delete node._scrollLeft;
 
         var child = node.firstChild;
         while(child) {
