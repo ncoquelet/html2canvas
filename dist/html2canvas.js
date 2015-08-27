@@ -1655,8 +1655,10 @@ function cloneNode(node, javascriptEnabled) {
 
 function initNode(node) {
     if (node.nodeType === 1) {
-        node.scrollTop = node._scrollTop;
+        node.scrollTop = node._scrollTop;        
+        delete node._scrollTop;
         node.scrollLeft = node._scrollLeft;
+        delete node._scrollLeft;
 
         var child = node.firstChild;
         while(child) {
@@ -4329,10 +4331,10 @@ function SVGNodeContainer(node, _native) {
         self.image = new Image();
         self.image.onload = resolve;
         self.image.onerror = reject;
-        self.image.src = "data:image/svg+xml;base64," + btoa((new XMLSerializer()).serializeToString(node));
-        if (self.image.complete === true) {
+        self.image.onload = function() {
             resolve(self.image);
-        }
+        };
+        self.image.src = "data:image/svg+xml;base64," + btoa((new XMLSerializer()).serializeToString(node));
     }) : this.hasFabric().then(function() {
         return new Promise(function(resolve) {
             window.html2canvas.svg.fabric.parseSVGDocument(node, self.createCanvas.call(self, resolve));
