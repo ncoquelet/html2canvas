@@ -13,12 +13,18 @@ function SVGNodeContainer(node, _native) {
         self.image.onload = function() {
             resolve(self.image);
         };
-        self.image.src = "data:image/svg+xml;base64," + btoa((new XMLSerializer()).serializeToString(node));
+        self.image.src = "data:image/svg+xml;base64," + b64EncodeUnicode((new XMLSerializer()).serializeToString(node));
     }) : this.hasFabric().then(function() {
         return new Promise(function(resolve) {
             window.html2canvas.svg.fabric.parseSVGDocument(node, self.createCanvas.call(self, resolve));
         });
     });
+}
+
+function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
 }
 
 SVGNodeContainer.prototype = Object.create(SVGContainer.prototype);
